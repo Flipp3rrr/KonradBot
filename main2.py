@@ -1,3 +1,4 @@
+# Import modules
 print("Importing 'discord', 'discord.ext', 'os', and 'random'...")
 import discord
 from discord.ext import commands
