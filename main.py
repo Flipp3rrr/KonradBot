@@ -16,12 +16,14 @@ try:
         btoken = file.read().replace("\n", "")
         print("Bot token read from 'token.txt'!")
 except:
+    # Input if no 'token.txt' found
     print("No 'token.txt' found!")
     btoken = input("TOKEN >> ")
 
 # Prefix
 bot = commands.Bot(command_prefix="k! ")
 
+# Login
 @bot.event
 async def on_ready():
     print("USERNAME: ", bot.user.name)
@@ -33,6 +35,7 @@ try:
     async def joined(ctx, member: discord.Member):
         await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
 except:
+    # Print error
     exception = sys.exc_info()[0]
     print("Exception: %s" % exception)
 
