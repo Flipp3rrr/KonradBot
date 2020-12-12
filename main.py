@@ -1,57 +1,54 @@
 # Import modules
-print("Importing 'discord', 'discord.ext', 'os', and 'random'...")
 import discord
 from discord.ext import commands
 import os
 import random
 
+# Set up logging
+import logging
+logging.basicConfig(level=logging.WARNING)
+
+# Output log to 'discord.log'
+logger = logging.getLogger("discord")
+handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
+handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
+logger.addHandler(handler)
+
+logging.info("Succesfully loaded modules")
+
 # Get bot token
 runDir = os.path.dirname(__file__)
 try:
-    print("Attempting to read 'token.txt'...")
+    logging.debug("Attempting to read 'token.txt'")
     tokenPath = os.path.join(runDir, "token.txt")
 
     # Read 'token.txt'
     with open("token.txt", "r") as file:
         btoken = file.read().replace("\n", "")
-        print("Bot token read from 'token.txt'!")
+        logging.info("Bot token was read from 'token.txt'")
 except:
     # Input if no 'token.txt' found
-    print("No 'token.txt' found!")
+    logging.warning("No 'token.txt' found! It is recommended to create this file and put your bot token in it.")
     btoken = input("TOKEN >> ")
 
-# Prefix
-bot = commands.Bot(command_prefix="k! ")
+client = discord.Client()
 
-# Login
-@bot.event
+# Print bot information after connection
+@client.event
 async def on_ready():
-    print("USERNAME: ", bot.user.name)
-    print("USER ID:  ", bot.user.id, "\n")
+    print("\nBot has logged in as {0.user} with id ???\n".format(client))
 
-# Member joined
-try:
-    @bot.command()
-    async def joined(ctx, member: discord.Member):
-        await ctx.send('{0.name} joined in {0.joined_at}'.format(member))
-except:
-    # Print error
-    exception = sys.exc_info()[0]
-    print("Exception: %s" % exception)
+# Regular commands
+@client.event
+async def on_message(message):
 
-# Ping command
-@bot.command()
-async def ping(ctx):
-    await ctx.send("Pong!")
-    print("Pinged!")
+    # Don't reply to self
+    if message.author == client.user:
+        return
 
-# Repeat
-@bot.command()
-async def repeat(ctx, content="repeating..."):
-    filterContent = content.replace("@", "[@]")
-    await ctx.send(filterContent)
-    print("Repeated >", filterContent)
-    print("Original >", content)
+    # Ping Command
+    if message.content.startswith("!k ping"):
+        await message.channel.send("Pong!")
+        logging.debug("Bot was pinged by ", message.author)
 
-print("All set! Running bot...\n")
-bot.run(btoken)
+client.run(btoken)
