@@ -2,3 +2,4 @@
 .vscode/settings.json
 token.txt
 .DS_Store
+*.log
