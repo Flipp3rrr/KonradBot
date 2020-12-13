@@ -11,8 +11,8 @@ import logging
 # Output log to 'bot.log'
 if os.path.exists("bot.log"):
     os.remove("bot.log")
-    print("bot.log removed, waiting a second")
-    time.sleep(1)
+    print("bot.log removed, waiting .1 second")
+    time.sleep(.1)
 
 open("bot.log","w+")
 print("bot.log created")
@@ -46,10 +46,10 @@ else:
     logging.warning("filter.txt created")
 
 # Read 'filter.txt'
-with open("filter.txt", "r") as file:
-    filterPath = os.path.join(runDir, "filter.txt") 
-    wFilter = file.read()
-    logging.info("filter.txt opened")
+wFilter = [i.replace("\n", "") for i in open("filter.txt").readlines()]
+print("Words being filtered: %s" % (wFilter))
+#with open("filter.txt", "r") as file:
+#    filterPath = os.path.join(runDir, "filter.txt") 
 
 # Shorten 'discord.Client()' to 'client'
 client = discord.Client()
@@ -80,16 +80,11 @@ async def on_message(message):
         await message.channel.send("%s\n\nhttps://youtu.be/NxNwtiDSWJ4" % (message.author.mention))
         logging.debug("%s mentioned Sethbling" % (message.author))
 
-    # Slur filter
-    if wFilter.__contains__(message.content) == True:
-        await message.delete()
-        await message.channel.send("%s no slurs!" % (message.author.mention))
-    
-    # New slur entry
-    if message.content.startswith("!k newFilter"):
-        
-        #with open("test.txt", "a") as myfile:
-        #    myfile.write("appended text")
+    # Word filter
+    for bWords in wFilter:
+        if bWords in message.content:
+            await message.delete()
+            await message.channel.send("%s don't use such words!" % (message.author.mention))
 
     # Testing command
     if message.content.startswith("!k test"):
