@@ -82,6 +82,7 @@ async def on_message(message):
         if bWords in message.content:
             await message.delete()
             await message.channel.send("%s don't use such words!" % (message.author.mention))
+            print("%s said '%s'" % (message.author, message.content))
 
     # Testing command
     if message.content.startswith("!k test"):
