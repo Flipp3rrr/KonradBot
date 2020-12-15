@@ -46,10 +46,7 @@ else:
     logging.warning("filter.txt created")
 
 # Read 'filter.txt'
-wFilter = [i.replace("\n", "") for i in open("filter.txt").readlines()]
-print("Words being filtered: %s" % (wFilter))
-#with open("filter.txt", "r") as file:
-#    filterPath = os.path.join(runDir, "filter.txt") 
+wFilter = [i.replace("\n", "") for i in open("filter.txt").readlines()] 
 
 # Shorten 'discord.Client()' to 'client'
 client = discord.Client()
@@ -88,7 +85,7 @@ async def on_message(message):
 
     # Testing command
     if message.content.startswith("!k test"):
-        await delLog.send("Test")
-        logging.debug("Testing was done by %s" % (message.author))
+        await message.channel.send("%s bleep bloop test done!" % (message.author.mention))
+        print("Test successful, %s" % (message.author))
 
 client.run(bToken)
