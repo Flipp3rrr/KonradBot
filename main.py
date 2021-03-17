@@ -64,9 +64,6 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    # Log messages from other users
-    #print("new message from %s: %s" % (message.author, message.content))
-
     # Ping Command
     if message.content.startswith("!k ping"):
         await message.channel.send("Pong!")
@@ -82,7 +79,7 @@ async def on_message(message):
         if bWords in message.content:
             await message.delete()
             await message.channel.send("%s don't use such words!" % (message.author.mention))
-            print("%s said '%s'" % (message.author, message.content))
+            print("%s in %s: %s" % (message.author, message.channel, message.content))
 
     # Testing command
     if message.content.startswith("!k test"):
