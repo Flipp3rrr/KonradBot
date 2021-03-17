@@ -86,4 +86,8 @@ async def on_message(message):
         await message.channel.send("%s bleep bloop test done!" % (message.author.mention))
         print("Test successful, %s" % (message.author))
 
+    # Shut up Moch
+    if message.author == "sethbling#8362":
+        await message.channel.send("shut up")
+
 client.run(bToken)
