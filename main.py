@@ -48,7 +48,7 @@ else:
 if os.path.exists("infractions.txt"):
     logging.info("'infractions.txt' exists")
 else:
-    logging.warning("'vinfractions.txt' doesn't exist")
+    logging.warning("'infractions.txt' doesn't exist")
     open("infractions.txt", "w+")
     logging.warning("'infractions.txt' created")
 
