@@ -39,11 +39,18 @@ except:
 
 # Word filter
 if os.path.exists("filter.txt"):
-    logging.info("filter.txt exists")
+    logging.info("'filter.txt' exists")
 else:
     logging.warning("'filter.txt' doesn't exist")
     open("filter.txt","w+")
-    logging.warning("filter.txt created")
+    logging.warning("'filter.txt' created")
+
+if os.path.exists("infractions.txt"):
+    logging.info("'infractions.txt' exists")
+else:
+    logging.warning("'vinfractions.txt' doesn't exist")
+    open("infractions.txt", "w+")
+    logging.warning("'infractions.txt' created")
 
 # Read 'filter.txt'
 wFilter = [i.replace("\n", "") for i in open("filter.txt").readlines()] 
@@ -56,7 +63,7 @@ client = discord.Client()
 async def on_ready():
     print("\nBot has logged in as {0.user} with id ???\n".format(client))
 
-# Filters
+# Commands and filters
 @client.event
 async def on_message(message):
 
@@ -80,6 +87,9 @@ async def on_message(message):
             await message.delete()
             await message.channel.send("%s don't use such words!" % (message.author.mention))
             print("%s in %s: %s" % (message.author, message.channel, message.content))
+            logging.debug("%s in %s: %s" % (message.author, message.channel, message.content))
+            with open("infractions.txt", "a") as infractionsLog:
+                infractionsLog.write("%s in %s: %s\n" % (message.author, message.channel, message.content))
 
     # Testing command
     if message.content.startswith("!k test"):
