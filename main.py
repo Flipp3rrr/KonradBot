@@ -23,19 +23,19 @@ print("Started logging")
 logging.info("Succesfully loaded modules")
 
 # Get bot token
-runDir = os.path.dirname(__file__)
+run_dir = os.path.dirname(__file__)
 try:
     logging.debug("Attempting to read 'token.txt'")
-    tokenPath = os.path.join(runDir, "token.txt")
+    token_path = os.path.join(run_dir, "token.txt")
 
     # Read 'token.txt'
     with open("token.txt", "r") as file:
-        bToken = file.read().replace("\n", "")
+        bot_token = file.read().replace("\n", "")
         logging.info("Bot token was read from 'token.txt'")
 except:
     # Input if no 'token.txt' found
     logging.warning("No 'token.txt' found! It is recommended to create this file and put your bot token in it.")
-    bToken = input("TOKEN >> ")
+    bot_token = input("TOKEN >> ")
 
 # Word filter
 if os.path.exists("filter.txt"):
@@ -53,28 +53,25 @@ else:
     logging.warning("'infractions.txt' created")
 
 # Read 'filter.txt'
-wFilter = [i.replace("\n", "") for i in open("filter.txt").readlines()] 
+word_filter = [i.replace("\n", "") for i in open("filter.txt").readlines()] 
 
-# Shorten 'discord.Client()' to 'client'
-client = discord.Client()
+# Shorten a lot to just 'bot'
+prefix = "!k"
+intents = discord.Intents.default()
+bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 # Print bot information after connection
-@client.event
+@bot.event
 async def on_ready():
-    print("\nBot has logged in as {0.user} with id ???\n".format(client))
+    print("\nBot has logged in as {user} with id {id}\n".format(user = bot.user.name, id = bot.user.id))
 
 # Commands and filters
-@client.event
+@bot.event
 async def on_message(message):
 
     # Don't reply to self
-    if message.author == client.user:
+    if message.author == bot.user.name:
         return
-
-    # Ping Command
-    if message.content.startswith("!k ping"):
-        await message.channel.send("Pong!")
-        logging.debug("Bot was pinged by %s" % (message.author))
 
     # SETHBLING
     if message.content.__contains__("hey guys sethbling here") == True:
@@ -82,8 +79,8 @@ async def on_message(message):
         logging.debug("%s mentioned Sethbling" % (message.author))
 
     # Word filter
-    for bWords in wFilter:
-        if bWords in message.content:
+    for bad_words in word_filter:
+        if bad_words in message.content:
             await message.delete()
             await message.channel.send("%s don't use such words!" % (message.author.mention))
             print("%s in %s: %s" % (message.author, message.channel, message.content))
@@ -91,13 +88,11 @@ async def on_message(message):
             with open("infractions.txt", "a") as infractionsLog:
                 infractionsLog.write("%s in %s: %s\n" % (message.author, message.channel, message.content))
 
-    # Testing command
-    if message.content.startswith("!k test"):
-        await message.channel.send("%s bleep bloop test done!" % (message.author.mention))
-        print("Test successful, %s" % (message.author))
+    await bot.process_commands(message)
 
-    # Shut up Moch
-    if message.author == "Distanced#2984":
-        await message.channel.send("shut up")
+@bot.command()
+async def ping(ctx):
+    await message.channel.send("Pong!")
+    logging.debug("Bot was pinged by %s" % (message.author))
 
-client.run(bToken)
+bot.run(bot_token)
